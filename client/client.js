@@ -27,7 +27,7 @@ form.addEventListener('submit', (event) => {
     form.style.display = 'none'; //set form to be hidden
     loadingElement.style.display = ''; //loading to be displayed
     
-    //send object to dynamic server, pass URL request against
+    //submitting tweets
     fetch(API_URL, {        //fetch, a way
         method: 'POST',
         body: JSON.stringify(mew),  //so server can parse and read obj
@@ -39,33 +39,40 @@ form.addEventListener('submit', (event) => {
           console.log(createdMew);
           form.reset(); //clear the form after meow done
           form.style.display = ''; //show form, (when done submitting, redisplay form)
-          loadingElement.style.display = 'none'; //hide loading elements
+          listAllMews();
       });
 });
 
 //get all data from DB
 function listAllMews() {
+    mewsElement.innerHTML='';
     fetch(API_URL)
     .then(response => response.json())
     .then(mews => {
         console.log(mews);
         console.log("hrek");
 
-        //create for displaying on client
+        
         mews.forEach(mew => {
+            //create for displaying on client
             const div = document.createElement('div');
 
             const header = document.createElement('h3');
             header.textContent = mew.name;
 
             const contents = document.createElement('p');
-            contents.textContent = mew.content;
+            contents.textContent = mew.content; 
             
-            //display
+            const date = document.createElement('d');
+            date.textContent = new Date(mew.created);
+
+            //display old tweets "meows"
             div.appendChild(header);
             div.appendChild(contents);
+            div.appendChild(date);
 
             mewsElement.appendChild(div);
         });
+        loadingElement.style.display = 'none'; //hide loading elements after displaying tweets done
     });
 }
